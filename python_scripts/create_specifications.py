@@ -22,9 +22,7 @@ rPos + rVel * T > rVel^2 / (2 * A) &
 # creates a VNN-LIB 2.0 file (list of text lines) according to a fixed template:
 # Arguments:
 # - eps_in: allowed distance from original network's output
-def vnnlib_template_2(eps_in):
-
-    assert eps_in >= 0.0
+def vnnlib_template_2():
 
     lines = []
 
@@ -55,14 +53,22 @@ def vnnlib_template_2(eps_in):
     # output constraints
     lines.append("; Output Constraints")
     lines.append("(assert (and (>= Y[0,0] -100.001) (<= Y[0,0] 100.001)))") 
-    lines.append("(assert (or")
-
-    lines.append("(>= Y[0,0] 100.0)") #case one: the car chose to fully break (safe)
-
-    lines.append("(and (== Y[0,0] 0.0) (> (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1])))") #case two: the car chose to keep change of the distance between cars constant, and after 0.1 seconds it is still physically possible to break before hitting the other car
-
-    lines.append("(and (< Y[0,0] 100.0) (>= Y[0,0] -100.0) (!= Y[0,0] 0.0) (> (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (or (or (and (> Y[0,0] 0.0) (or (> (- X[0,1]) (* 0.1 Y[0,0])) (< (- X[0,1]) 0.0))) (and (< Y[0,0] 0.0) (or (< (- X[0,1]) (* 0.1 Y[0,0])) (> (- X[0,1]) 0.0)))) (or (and (> Y[0,0] 0.0) (> (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (and (< Y[0,0] 0.0) (< (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))))))") #case three
-
-    lines.append("))")
+    lines.append("(assert (< Y[0,0] 100.0))")
+    lines.append("(assert (or (!= Y[0,0] 0.0) (<= (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1]))))")
+    lines.append('(assert (or (>= Y[0,0] 100.0) (< Y[0,0] -100.0) (== Y[0,0] 0.0) (<= (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (and (and (or (<= Y[0,0] 0.0) (and (<= (- X[0,1]) (* 0.1 Y[0,0])) (>= (- X[0,1]) 0.0))) (or (>= Y[0,0] 0.0) (and (>= (- X[0,1]) (* 0.1 Y[0,0])) (<= (- X[0,1]) 0.0)))) (and (or (<= Y[0,0] 0.0) (<= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (or (>= Y[0,0] 0.0) (>= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1])))))))')
 
     return lines
+
+
+    # # output constraints (un-inverted)
+    # lines.append("; Output Constraints")
+    # lines.append("(assert (and (>= Y[0,0] -100.001) (<= Y[0,0] 100.001)))") 
+    # lines.append("(assert (or")
+
+    # lines.append("(>= Y[0,0] 100.0)") #case one: the car chose to fully break (safe)
+
+    # lines.append("(and (== Y[0,0] 0.0) (> (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1])))") #case two: the car chose to keep change of the distance between cars constant, and after 0.1 seconds it is still physically possible to break before hitting the other car
+
+    # lines.append("(and (< Y[0,0] 100.0) (>= Y[0,0] -100.0) (!= Y[0,0] 0.0) (> (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (or (or (and (> Y[0,0] 0.0) (or (> (- X[0,1]) (* 0.1 Y[0,0])) (< (- X[0,1]) 0.0))) (and (< Y[0,0] 0.0) (or (< (- X[0,1]) (* 0.1 Y[0,0])) (> (- X[0,1]) 0.0)))) (or (and (> Y[0,0] 0.0) (> (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (and (< Y[0,0] 0.0) (< (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))))))") #case three
+
+    # lines.append("))")
