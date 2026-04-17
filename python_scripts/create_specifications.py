@@ -17,7 +17,16 @@ rAccpost != 0 &
 0 <= T & cpost = 0 & rPospost = rPos & rVelpost = rVel |
 rPos + rVel * T > rVel^2 / (2 * A) &
 0 <= T & cpost = 0 & rAccpost = 0 & rPospost = rPos & rVelpost = rVel)
+
+
+"T"=>0.1,
+"cpost"=>0.0,
+"A"=>100,
+"B"=>100,
+"rVelpost"=>"rVel",
+"rPospost"=>"rPos"
 """
+
 
 # creates a VNN-LIB 2.0 file (list of text lines) according to a fixed template:
 # Arguments:
