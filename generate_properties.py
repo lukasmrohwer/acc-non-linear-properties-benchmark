@@ -38,7 +38,7 @@ def main():
 
         lines = vnnlib_template_2(min_rPos, max_rPos, min_rVel, max_rVel)
 
-        vnnlib_filename = f"vnnlib/instance_{i}.vnnlib2"
+        vnnlib_filename = f"vnnlib/instance_{i}.vnnlib"
         with open(vnnlib_filename, "w") as f:
             f.writelines(line + "\n" for line in lines)
 

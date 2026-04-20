@@ -11,7 +11,7 @@
 
 ; Input Constraints
 (assert (and (>= X[0,0] 80.0) (<= X[0,0] 100.0)))
-(assert (and (>= X[0,1] 40.0) (<= X[0,1] 80.0)))
+(assert (and (>= X[0,1] 80.0) (<= X[0,1] 120.0)))
 (assert (and (> X[0,0] 0.0) (>= (* X[0,0] 200.0) (* X[0,1] X[0,1]))))
 
 ; Output Constraints
