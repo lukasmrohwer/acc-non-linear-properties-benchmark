@@ -28,10 +28,11 @@ rPos + rVel * T > rVel^2 / (2 * A) &
 """
 
 
+
 # creates a VNN-LIB 2.0 file (list of text lines) according to a fixed template:
 # Arguments:
 # - eps_in: allowed distance from original network's output
-def vnnlib_template_2():
+def vnnlib_template_2(min_rPos, max_rPos, min_rVel, max_rVel):
 
     lines = []
 
@@ -54,17 +55,14 @@ def vnnlib_template_2():
 
     # input constraints
     lines.append("; Input Constraints")
-    lines.append("(assert (and (>= X[0,0] 0.0) (<= X[0,0] 100.0)))")
-    lines.append("(assert (and (>= X[0,1] -200.0) (<= X[0,1] 200.0)))")
+    lines.append(f"(assert (and (>= X[0,0] {min_rPos}) (<= X[0,0] {max_rPos})))")
+    lines.append(f"(assert (and (>= X[0,1] {min_rVel}) (<= X[0,1] {max_rVel})))")
     lines.append("(assert (and (> X[0,0] 0.0) (>= (* X[0,0] 200.0) (* X[0,1] X[0,1]))))") #it is physically possible to break before hitting the other car
     lines.append("")
 
     # output constraints
     lines.append("; Output Constraints")
-    lines.append("(assert (and (>= Y[0,0] -100.001) (<= Y[0,0] 100.001)))") 
-    lines.append("(assert (< Y[0,0] 100.0))")
-    lines.append("(assert (or (!= Y[0,0] 0.0) (<= (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1]))))")
-    lines.append('(assert (or (>= Y[0,0] 100.0) (< Y[0,0] -100.0) (== Y[0,0] 0.0) (<= (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (and (and (or (<= Y[0,0] 0.0) (and (<= (- X[0,1]) (* 0.1 Y[0,0])) (>= (- X[0,1]) 0.0))) (or (>= Y[0,0] 0.0) (and (>= (- X[0,1]) (* 0.1 Y[0,0])) (<= (- X[0,1]) 0.0)))) (and (or (<= Y[0,0] 0.0) (<= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (or (>= Y[0,0] 0.0) (>= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1])))))))')
+    lines.append("(assert (or (or (< Y[0,0] -100.001) (> Y[0,0] 100.001)) (and (< Y[0,0] 100.0) (or (!= Y[0,0] 0.0) (<= (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1]))) (or (>= Y[0,0] 100.0) (< Y[0,0] -100.0) (== Y[0,0] 0.0) (<= (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (and (and (or (<= Y[0,0] 0.0) (and (<= (- X[0,1]) (* 0.1 Y[0,0])) (>= (- X[0,1]) 0.0))) (or (>= Y[0,0] 0.0) (and (>= (- X[0,1]) (* 0.1 Y[0,0])) (<= (- X[0,1]) 0.0)))) (and (or (<= Y[0,0] 0.0) (<= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (or (>= Y[0,0] 0.0) (>= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1])))))))))")
 
     return lines
 
@@ -81,3 +79,10 @@ def vnnlib_template_2():
     # lines.append("(and (< Y[0,0] 100.0) (>= Y[0,0] -100.0) (!= Y[0,0] 0.0) (> (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (or (or (and (> Y[0,0] 0.0) (or (> (- X[0,1]) (* 0.1 Y[0,0])) (< (- X[0,1]) 0.0))) (and (< Y[0,0] 0.0) (or (< (- X[0,1]) (* 0.1 Y[0,0])) (> (- X[0,1]) 0.0)))) (or (and (> Y[0,0] 0.0) (> (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (and (< Y[0,0] 0.0) (< (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))))))") #case three
 
     # lines.append("))")
+
+
+    # # output constraints (partially-inverted)
+    # lines.append("(assert (and (>= Y[0,0] -100.001) (<= Y[0,0] 100.001)))") 
+    # lines.append("(assert (< Y[0,0] 100.0))")
+    # lines.append("(assert (or (!= Y[0,0] 0.0) (<= (* (+ X[0,0] (* X[0,1] 0.1)) 200.0) (* X[0,1] X[0,1]))))")
+    # lines.append('(assert (or (>= Y[0,0] 100.0) (< Y[0,0] -100.0) (== Y[0,0] 0.0) (<= (* 200.0 (+ X[0,0] (* X[0,1] 0.1) (* Y[0,0] 0.005))) (* (+ X[0,1] (* Y[0,0] 0.1)) (+ X[0,1] (* Y[0,0] 0.1)))) (and (and (or (<= Y[0,0] 0.0) (and (<= (- X[0,1]) (* 0.1 Y[0,0])) (>= (- X[0,1]) 0.0))) (or (>= Y[0,0] 0.0) (and (>= (- X[0,1]) (* 0.1 Y[0,0])) (<= (- X[0,1]) 0.0)))) (and (or (<= Y[0,0] 0.0) (<= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1]))) (or (>= Y[0,0] 0.0) (>= (* (* X[0,0] 2.0) Y[0,0]) (* X[0,1] X[0,1])))))))')
